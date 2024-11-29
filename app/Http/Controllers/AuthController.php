@@ -130,4 +130,21 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'Logged out successfully.']);
     }
+
+    // **Create Sample User** - thêm đoạn mã tạo người dùng mẫu vào đây
+    public function createSampleUser(Request $request)
+    {
+        // Tạo tài khoản với mã hóa mật khẩu
+        User::create([
+            'name' => 'Ngô Văn Sinh',
+            'email' => 'ngovansinhqni@gmail.com',
+            'password' => Hash::make('Sinh12345678'), // Mã hóa mật khẩu
+            'created_at' => now(),
+            'updated_at' => now(),
+            'email_verified_at' => null, // Bỏ qua xác minh email
+        ]);
+
+        // Trả về phản hồi sau khi tạo người dùng thành công
+        return response()->json(['message' => 'Sample user created successfully']);
+    }
 }

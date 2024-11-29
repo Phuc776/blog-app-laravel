@@ -16,9 +16,9 @@ class RolesSeeder extends Seeder
     public function run()
     {
         DB::table('roles')->insert([
-            ['name' => 'user'],
-            ['name' => 'admin'],
-            ['name' => 'moderator'],
+            'id' => 1,
+            'name' => 'Admin', // Hoặc tên role bạn muốn
         ]);
     }
 }
+

@@ -44,8 +44,8 @@ class Post extends Model
     /**
      * Relationship with Media model.
      */
-    public function media()
-    {
-        return $this->hasMany(Media::class);
-    }
+    // public function media()
+    // {
+    //     return $this->hasMany(Media::class);
+    // }
 }
