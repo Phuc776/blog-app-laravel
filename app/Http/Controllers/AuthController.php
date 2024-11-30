@@ -77,15 +77,15 @@ class AuthController extends Controller
             'token' => 'required',
             'password' => 'required|string|min:8|confirmed',
         ]);
-    
+
         $user = User::where('email', $validated['email'])->firstOrFail();
-    
+
         // Verify the token (implementation depends on your reset flow)
-    
+
         $user->update([
             'password' => Hash::make($validated['password']),
         ]);
-    
+
         return response()->json(['message' => 'Password reset successful.']);
     }
 
