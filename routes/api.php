@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\FollowController;
+use App\Http\Controllers\LikeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -38,4 +39,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/unfollow/{id}', [FollowController::class, 'unfollow']);
     Route::get('/following', [FollowController::class, 'getFollowing']);
     Route::get('/followers', [FollowController::class, 'getFollowers']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/posts/{id}/like', [LikeController::class, 'likePost']);
+    Route::delete('/posts/{id}/unlike', [LikeController::class, 'unlikePost']);
+    Route::get('/posts/{id}/likes', [LikeController::class, 'getLikes']);
 });
