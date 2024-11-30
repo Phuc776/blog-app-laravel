@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Web\Auth\LoginRequest;
-use App\Http\Requests\Web\Auth\ForgotPasswordRequest;
-use App\Http\Requests\Web\Auth\ResetPasswordRequest;
-use App\Http\Requests\Web\Auth\ResendVerificationRequest;
-use App\Http\Requests\Web\Auth\RegisterRequest;
+use App\Http\Requests\Api\Auth\LoginRequest;
+use App\Http\Requests\Api\Auth\ForgotPasswordRequest;
+use App\Http\Requests\Api\Auth\ResetPasswordRequest;
+use App\Http\Requests\Api\Auth\ResendVerificationRequest;
+use App\Http\Requests\Api\Auth\RegisterRequest;
 use App\Models\User;
 use App\Services\AuthService;
 use Illuminate\Http\Request;

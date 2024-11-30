@@ -27,6 +27,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'avatar',
         'role_id', // Role relationship
         'avatar',  // Profile picture or user avatar
         'auth_type', // For distinguishing between registered and OAuth2 users

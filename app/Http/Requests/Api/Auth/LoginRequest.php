@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Web\Auth;
+namespace App\Http\Requests\Api\Auth;
 
 use App\Http\Requests\BaseRequest;
 

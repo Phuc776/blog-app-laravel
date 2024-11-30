@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Web\Auth;
+namespace App\Http\Requests\Api\Auth;
 
 use App\Http\Requests\BaseRequest;
-use Illuminate\Foundation\Http\FormRequest;
 
-class ResetPasswordRequest extends BaseRequest
+class RegisterRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,8 +14,8 @@ class ResetPasswordRequest extends BaseRequest
     public function rules()
     {
         return [
-            'email' => 'required|string|email|exists:users,email',
-            'token' => 'required|string',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ];
     }

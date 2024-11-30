@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Web\Auth;
+namespace App\Http\Requests\Api\Auth;
 
 use App\Http\Requests\BaseRequest;
 
-
-class RegisterRequest extends BaseRequest
+class ResetPasswordRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,8 +14,8 @@ class RegisterRequest extends BaseRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email|exists:users,email',
+            'token' => 'required|string',
             'password' => 'required|string|min:8|confirmed',
         ];
     }
