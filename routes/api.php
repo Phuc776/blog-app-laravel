@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OAuthController;
-use App\Http\Controllers\PostController; // Đảm bảo import PostController
+use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,18 +35,7 @@ Route::prefix('auth')->group(function () {
 
 // Protected routes requiring Sanctum authentication
 Route::middleware('auth:sanctum')->group(function () {
-    // Route to get all posts
-    Route::get('/posts', [PostController::class, 'index']);  // Get all posts
-
-    // Route to create a post
-    Route::post('/posts', [PostController::class, 'store']);  // Create a post
-
-    // Route to get a single post by ID
-    Route::get('/posts/{id}', [PostController::class, 'show']);  // Get a single post
-
-    // Route to update a post
-    Route::put('/posts/{id}', [PostController::class, 'update']);  // Update a post
-
-    // Route to delete a post
-    Route::delete('/posts/{id}', [PostController::class, 'destroy']);  // Delete a post
+    // RESTful routes for PostController using apiResource
+    Route::apiResource('posts', PostController::class);
 });
+

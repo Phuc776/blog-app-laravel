@@ -9,102 +9,109 @@ class PostController extends Controller
 {
     public function __construct()
     {
-        // Yêu cầu người dùng phải đăng nhập với Bearer Token thông qua middleware 'auth:sanctum'
+        // Bảo vệ tất cả các route bằng middleware 'auth:sanctum'
         $this->middleware('auth:sanctum');
     }
 
-    // Hiển thị tất cả các bài viết
+    // Lấy tất cả bài viết
     public function index()
     {
-        $posts = Post::all();  // Lấy tất cả bài viết
-        return response()->json($posts, 200, [], JSON_UNESCAPED_UNICODE);  // Trả về danh sách bài viết dưới dạng JSON
-    }
-
-    // Hiển thị một bài viết cụ thể
-    public function show($id)
-    {
-        $post = Post::findOrFail($id);  // Tìm bài viết theo ID
-        return response()->json($post, 200, [], JSON_UNESCAPED_UNICODE);  // Trả về bài viết dưới dạng JSON
-    }
-
-    // Hiển thị form để tạo bài viết (có thể không cần trong API)
-    public function create()
-    {
+        $posts = Post::all(); // Lấy tất cả bài viết
         return response()->json([
-            'message' => 'Truy cập API để tạo bài viết.'
-        ], 200, [], JSON_UNESCAPED_UNICODE);  // Thông báo cho người dùng biết rằng API này cần được gọi
+            'status' => 'success',
+            'message' => 'List of articles',
+            'data' => $posts,
+        ], 200);
     }
 
-    // Lưu bài viết vào cơ sở dữ liệu
+    // Tạo bài viết mới
     public function store(Request $request)
     {
         // Validate dữ liệu
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',
             'status' => 'required|boolean',
         ]);
 
-        // Tạo bài viết mới
+        // Tạo bài viết
         $post = Post::create([
-            'user_id' => auth()->id(),  // Gán user_id là ID của người dùng hiện tại
-            'title' => $request->title,
-            'content' => $request->content,
-            'status' => $request->status,
+            'user_id' => auth()->id(),
+            'title' => $validated['title'],
+            'content' => $validated['content'],
+            'status' => $validated['status'],
         ]);
 
-        return response()->json([  // Trả về phản hồi JSON
+        return response()->json([
+            'status' => 'success',
             'message' => 'Bài viết đã được tạo.',
-            'post' => $post
-        ], 201, [], JSON_UNESCAPED_UNICODE);  // Trả về mã trạng thái 201 (Created)
+            'data' => $post,
+        ], 201);
     }
 
-    // Hiển thị form để chỉnh sửa bài viết (có thể không cần trong API)
-    public function edit($id)
+    // Lấy bài viết cụ thể
+    public function show($id)
     {
-        $post = Post::findOrFail($id);  // Tìm bài viết theo ID
-        return response()->json($post, 200, [], JSON_UNESCAPED_UNICODE);  // Trả về bài viết dưới dạng JSON để chỉnh sửa
+        $post = Post::findOrFail($id); // Tìm bài viết theo ID
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Article details',
+            'data' => $post,
+        ], 200);
     }
 
-    // Cập nhật bài viết vào cơ sở dữ liệu
+    // Cập nhật bài viết
     public function update(Request $request, $id)
     {
-        $post = Post::findOrFail($id);  // Tìm bài viết theo ID
+        $post = Post::findOrFail($id);
 
-        // Kiểm tra quyền của người dùng
+        // Kiểm tra quyền sở hữu
         if ($post->user_id !== auth()->id()) {
-            return response()->json(['error' => 'Bạn không có quyền cập nhật bài viết này.'], 403, [], JSON_UNESCAPED_UNICODE);  // Trả về lỗi nếu người dùng không phải là chủ sở hữu bài viết
+            return response()->json([
+                'status' => 'error',
+                'message' => 'You dont have permission to update this article',
+                'data' => null,
+            ], 403);
         }
 
         // Validate dữ liệu
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',
             'status' => 'required|boolean',
         ]);
 
         // Cập nhật bài viết
-        $post->update($request->all());
+        $post->update($validated);
 
-        return response()->json([  // Trả về thông báo thành công
-            'message' => 'Bài viết đã được cập nhật.',
-            'post' => $post
-        ], 200, [], JSON_UNESCAPED_UNICODE);  // Trả về mã trạng thái 200 (OK)
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Article has been updated',
+            'data' => $post,
+        ], 200);
     }
 
     // Xóa bài viết
     public function destroy($id)
     {
-        $post = Post::findOrFail($id);  // Tìm bài viết theo ID
+        $post = Post::findOrFail($id);
 
-        // Kiểm tra quyền của người dùng
+        // Kiểm tra quyền sở hữu
         if ($post->user_id !== auth()->id()) {
-            return response()->json(['error' => 'Bạn không có quyền xóa bài viết này.'], 403, [], JSON_UNESCAPED_UNICODE);  // Trả về lỗi nếu người dùng không phải là chủ sở hữu bài viết
+            return response()->json([
+                'status' => 'error',
+                'message' => 'You dont have the right to delete this article',
+                'data' => null,
+            ], 403);
         }
 
         // Xóa bài viết
         $post->delete();
 
-        return response()->json(['message' => 'Bài viết đã được xóa.'], 200, [], JSON_UNESCAPED_UNICODE);  // Trả về thông báo thành công
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Deleted article',
+            'data' => null,
+        ], 200);
     }
 }
