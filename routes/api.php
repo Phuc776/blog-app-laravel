@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OAuthController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -30,4 +31,9 @@ Route::prefix('auth')->group(function () {
         Route::get('/redirect', [OAuthController::class, 'redirectToProvider']); // Redirect to provider
         Route::get('/callback', [OAuthController::class, 'handleProviderCallback']); // Handle provider callback
     });
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', [UserController::class, 'getUser']);
+    Route::put('/user', [UserController::class, 'updateUser']);
 });

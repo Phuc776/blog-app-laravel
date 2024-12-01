@@ -29,7 +29,7 @@ class AuthService
 
         if (!$user || !password_verify($data['password'], $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
+                'message' => ['Email or Password is incorrect.'],
             ]);
         }
 
