@@ -2,41 +2,49 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Auth;
 use App\Models\Like;
 use App\Models\Post;
 
 class LikeService
 {
-    public function likePost($userId, $postId)
+    protected $model;
+
+    public function __construct(Like $like)
+    {
+        $this->model = $like;
+    }
+
+    public function likePost($postId)
     {
         $post = Post::findOrFail($postId);
 
-        $like = Like::firstOrCreate([
-            'user_id' => $userId,
+        $like = $this->model->firstOrCreate([
+            'user_id' => Auth::id(),
             'post_id' => $post->id,
         ]);
 
-        return $like;
+        return ['message' => 'Liked successfully!', 'status' => true, 'data' => $like];
     }
 
-    public function unlikePost($userId, $postId)
+    public function unlikePost($postId)
     {
         $post = Post::findOrFail($postId);
 
-        $like = Like::where('user_id', $userId)->where('post_id', $post->id);
+        $like = $this->model->where('user_id', Auth::id())->where('post_id', $post->id);
 
         if ($like) {
             $like->delete();
-            return true;
+            return ['message' => 'Unlike successfully', 'status' => true, 'data' => $like];
         }
 
-        return false;
+        return ['message' => 'Unlike not successfully!', 'status' => false, 'data' => $like];
     }
 
     public function getLikes($postId)
     {
         $post = Post::findOrFail($postId);
 
-        return Like::where('post_id', $post->id)->with('user')->get();
+        return $this->model->where('post_id', $post->id)->count();
     }
 }

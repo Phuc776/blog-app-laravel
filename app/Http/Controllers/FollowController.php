@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Api\Follow\FollowRequest;
+use App\Http\Resources\FollowResource;
+
+use App\Models\User;
 use App\Services\FollowService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class FollowController extends Controller
@@ -14,36 +19,51 @@ class FollowController extends Controller
         $this->followService = $followService;
     }
 
-    public function follow($followedId)
+    public function follow(User $followed)
     {
-        if ($followedId == Auth::id()) {
-            return response()->json(['message' => 'You cannot follow yourself.'], 400);
+        $result = $this->followService->follow($followed->id);
+
+        if ($result) {
+            return response()->success(201, $result['message'], $result['data']);
         }
 
-        $result = $this->followService->follow($followedId);
-
-        return response()->json(['message' => $result['message']], $result['status'] ? 201 : 400);
+        return response()->error(400, $result['message'], null);
     }
 
-    public function unfollow($followedId)
+    public function unfollow(User $followed)
     {
-        $result = $this->followService->unfollow($followedId);
+        $result = $this->followService->unfollow($followed->id);
 
-        return response()->json(['message' => $result['message']], $result['status'] ? 200 : 404);
+        if ($result) {
+            return response()->success(200, $result['message'], $result['data']);
+        }
+
+        return response()->error(404, $result['message'], null);
     }
 
-
-    public function getFollowing()
+    public function getFollowing(Request $request)
     {
-        $follows = $this->followService->getFollowing();
-
-        return response()->json(['data' => $follows]);
+        $result = $this->followService->getFollowing();
+        return FollowResource::apiPaginate($result, $request);
     }
 
-    public function getFollowers()
+    public function getFollowers(Request $request)
     {
-        $followers = $this->followService->getFollowers();
+        $result = $this->followService->getFollowers();
+        return FollowResource::apiPaginate($result, $request);
+    }
 
-        return response()->json(['data' => $followers]);
+    public function getFollowingCount()
+    {
+        $count = $this->followService->getFollowingCount();
+
+        return response()->success(200, 'Get following count successfully.', ['count' => $count]);
+    }
+
+    public function getFollowersCount()
+    {
+        $count = $this->followService->getFollowersCount();
+
+        return response()->success(200, 'Get followers count  successfully.', ['count' => $count]);
     }
 }

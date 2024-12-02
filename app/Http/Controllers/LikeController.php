@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
+use App\Models\User;
 use App\Services\LikeService;
 use Illuminate\Http\Request;
 
@@ -14,32 +16,33 @@ class LikeController extends Controller
         $this->likeService = $likeService;
     }
 
-    public function likePost($postId)
+    public function likePost(Post $post)
     {
-        $userId = auth()->id();
 
-        $this->likeService->likePost($userId, $postId);
-
-        return response()->json(['message' => 'Liked successfully'], 200);
-    }
-
-    public function unlikePost($postId)
-    {
-        $userId = auth()->id();
-
-        $result = $this->likeService->unlikePost($userId, $postId);
+        $result = $this->likeService->likePost($post->id);
 
         if ($result) {
-            return response()->json(['message' => 'Unliked successfully'], 200);
+            return response()->success(201, $result['message'], $result['data']);
         }
 
-        return response()->json(['message' => 'Like not found'], 404);
+        return response()->error(400, $result['message'], null);
+    }
+
+    public function unlikePost(Post $post)
+    {
+        $result = $this->likeService->unlikePost($post->id);
+
+        if ($result) {
+            return response()->success(201, $result['message'], $result['data']);
+        }
+
+        return response()->error(400, $result['message'], null);
     }
 
     public function getLikes($postId)
     {
         $likes = $this->likeService->getLikes($postId);
 
-        return response()->json(['likes' => $likes], 200);
+        return response()->success(200, 'Get like count  successfully.', ['count' => $likes]);
     }
 }

@@ -35,14 +35,16 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/follow/{id}', [FollowController::class, 'follow']);
-    Route::delete('/unfollow/{id}', [FollowController::class, 'unfollow']);
+    Route::post('/follow/{followed}', [FollowController::class, 'follow']);
+    Route::delete('/unfollow/{followed}', [FollowController::class, 'unfollow']);
     Route::get('/following', [FollowController::class, 'getFollowing']);
+    Route::get('/followingCount', [FollowController::class, 'getFollowingCount']);
     Route::get('/followers', [FollowController::class, 'getFollowers']);
+    Route::get('/followersCount', [FollowController::class, 'getFollowersCount']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/posts/{id}/like', [LikeController::class, 'likePost']);
-    Route::delete('/posts/{id}/unlike', [LikeController::class, 'unlikePost']);
-    Route::get('/posts/{id}/likes', [LikeController::class, 'getLikes']);
+    Route::post('/posts/{post}/like', [LikeController::class, 'likePost']);
+    Route::delete('/posts/{post}/unlike', [LikeController::class, 'unlikePost']);
+    Route::get('/posts/{post}/likes', [LikeController::class, 'getLikes']);
 });

@@ -7,9 +7,16 @@ use Illuminate\Support\Facades\Auth;
 
 class FollowService
 {
+    protected $model;
+
+    public function __construct(Follow $follow)
+    {
+        $this->model = $follow;
+    }
+
     public function follow($id)
     {
-        $exists = Follow::where('following_id', Auth::id())
+        $exists = $this->model->where('following_id', Auth::id())
             ->where('followed_id', $id)
             ->exists();
 
@@ -28,34 +35,44 @@ class FollowService
 
     public function unfollow($followedId)
     {
-        $follow = Follow::where('following_id', Auth::id())
+        $follow = $this->model->where('following_id', Auth::id())
             ->where('followed_id', $followedId);
 
         if (!$follow) {
-            return ['message' => 'Follow not found', 'status' => false];
+            return ['message' => 'Follow not found', 'status' => false, 'data' => $follow];
         }
 
         $follow->delete();
 
-        return ['message' => 'Unfollowed successfully', 'status' => true];
+        return ['message' => 'Unfollowed successfully!', 'status' => true, 'data' => $follow];
     }
-
 
     public function getFollowing()
     {
-        $follow = Follow::where('following_id', Auth::id())
-            ->with('followed')
-            ->get();
-
-        return $follow;
+        return $this->model
+            ->join('users', 'follows.followed_id', '=', 'users.id')
+            ->where('follows.following_id', Auth::id())
+            ->select('follows.followed_id', 'users.*')
+            ->orderBy('follows.followed_id', 'desc');
     }
 
     public function getFollowers()
     {
-        $follow = Follow::where('followed_id', Auth::id())
-            ->with('follower')
-            ->get();
+        return $this->model
+            ->join('users as u', 'follows.following_id', '=', 'u.id')
+            ->where('followed_id', Auth::id())
+            ->select('follows.following_id', 'u.*')
+            ->orderBy('follows.following_id', 'desc');
+    }
 
-        return $follow;
+
+    public function getFollowingCount()
+    {
+        return $this->model->where('following_id', Auth::id())->count();
+    }
+
+    public function getFollowersCount()
+    {
+        return $this->model->where('followed_id', Auth::id())->count();
     }
 }
