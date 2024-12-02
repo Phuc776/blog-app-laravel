@@ -13,16 +13,27 @@ class PostController extends Controller
         $this->middleware('auth:sanctum');
     }
 
-    // Lấy tất cả bài viết
+    // Lấy tất cả bài viết và phân trang
     public function index()
-    {
-        $posts = Post::all(); // Lấy tất cả bài viết
-        return response()->json([
-            'status' => 'success',
-            'message' => 'List of articles',
-            'data' => $posts,
-        ], 200);
-    }
+{
+    $posts = Post::paginate(2); // Phân trang với 2 bài viết mỗi trang
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'List of articles',
+        'data' => [
+            'posts' => $posts->items(), // Chỉ trả về danh sách bài viết
+            'pagination' => [ // Thêm thông tin phân trang
+                'total' => $posts->total(),
+                'per_page' => $posts->perPage(),
+                'current_page' => $posts->currentPage(),
+                'last_page' => $posts->lastPage(),
+                'next_page_url' => $posts->nextPageUrl(),
+                'prev_page_url' => $posts->previousPageUrl(),
+            ]
+        ],
+    ], 200);
+}
 
     // Tạo bài viết mới
     public function store(Request $request)
@@ -44,7 +55,7 @@ class PostController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Bài viết đã được tạo.',
+            'message' => 'Posts already created',
             'data' => $post,
         ], 201);
     }
