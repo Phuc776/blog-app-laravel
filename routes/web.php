@@ -33,3 +33,8 @@ Route::middleware('auth')->group(function () {
 Route::get('/create-sample-user', [AuthController::class, 'createSampleUser']);
 
 
+
+// Route to display reset password form with token
+Route::get('/reset-password/{token}', function ($token) {
+    return view('auth.reset-password', ['token' => $token]);
+})->name('password.reset');
