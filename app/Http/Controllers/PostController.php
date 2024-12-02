@@ -2,28 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Api\Post\IndexPostRequest;
+use App\Http\Requests\Api\Post\PostRequest;
+use App\Http\Requests\Api\Post\UpdatePostRequest;
+use App\Http\Requests\Api\Post\ShowPostRequest;
+use App\Http\Requests\Api\Post\DestroyPostRequest;
 use App\Models\Post;
-use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
     public function __construct()
     {
-        // Bảo vệ tất cả các route bằng middleware 'auth:sanctum'
         $this->middleware('auth:sanctum');
     }
 
     // Lấy tất cả bài viết và phân trang
-    public function index()
-{
-    $posts = Post::paginate(2); // Phân trang với 2 bài viết mỗi trang
+    public function index(IndexPostRequest $request)
+    {
+        $validated = $request->validated();
 
-    return response()->json([
-        'status' => 'success',
-        'message' => 'List of articles',
-        'data' => [
-            'posts' => $posts->items(), // Chỉ trả về danh sách bài viết
-            'pagination' => [ // Thêm thông tin phân trang
+        $query = Post::query();
+
+        // Phân trang
+        $perPage = $validated['per_page'] ?? 2;
+        $page = $validated['page'] ?? 1;
+
+        // Sắp xếp
+        $sort = $validated['sort'] ?? 'created_at';
+        $order = $validated['order'] ?? 'desc';
+
+        $posts = $query->orderBy($sort, $order)->paginate($perPage);
+
+        return response()->success(200, 'List of articles', [
+            'posts' => $posts->items(),
+            'pagination' => [
                 'total' => $posts->total(),
                 'per_page' => $posts->perPage(),
                 'current_page' => $posts->currentPage(),
@@ -31,21 +43,14 @@ class PostController extends Controller
                 'next_page_url' => $posts->nextPageUrl(),
                 'prev_page_url' => $posts->previousPageUrl(),
             ]
-        ],
-    ], 200);
-}
+        ]);
+    }
 
     // Tạo bài viết mới
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
-        // Validate dữ liệu
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'content' => 'required',
-            'status' => 'required|boolean',
-        ]);
+        $validated = $request->validated();
 
-        // Tạo bài viết
         $post = Post::create([
             'user_id' => auth()->id(),
             'title' => $validated['title'],
@@ -53,76 +58,46 @@ class PostController extends Controller
             'status' => $validated['status'],
         ]);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Posts already created',
-            'data' => $post,
-        ], 201);
-    }
-
-    // Lấy bài viết cụ thể
-    public function show($id)
-    {
-        $post = Post::findOrFail($id); // Tìm bài viết theo ID
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Article details',
-            'data' => $post,
-        ], 200);
+        return response()->success(201, 'Post created successfully.', $post);
     }
 
     // Cập nhật bài viết
-    public function update(Request $request, $id)
+    public function update(UpdatePostRequest $request, $id)
     {
+        $validated = $request->validated();
         $post = Post::findOrFail($id);
 
         // Kiểm tra quyền sở hữu
         if ($post->user_id !== auth()->id()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'You dont have permission to update this article',
-                'data' => null,
-            ], 403);
+            return response()->error(403, 'You don\'t have permission to update this article');
         }
 
-        // Validate dữ liệu
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'content' => 'required',
-            'status' => 'required|boolean',
-        ]);
-
-        // Cập nhật bài viết
         $post->update($validated);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Article has been updated',
-            'data' => $post,
-        ], 200);
+        return response()->success(200, 'Article updated successfully.', $post);
     }
 
-    // Xóa bài viết
-    public function destroy($id)
+    // Xem chi tiết bài viết
+    public function show(ShowPostRequest $request, $id)
     {
         $post = Post::findOrFail($id);
 
-        // Kiểm tra quyền sở hữu
-        if ($post->user_id !== auth()->id()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'You dont have the right to delete this article',
-                'data' => null,
-            ], 403);
-        }
-
-        // Xóa bài viết
-        $post->delete();
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Deleted article',
-            'data' => null,
-        ], 200);
+        return response()->success(200, 'Article details', $post);
     }
+
+// Xóa bài viết
+public function destroy(DestroyPostRequest $request, $id)
+{
+    $post = Post::findOrFail($id);
+
+    // Kiểm tra quyền sở hữu
+    if ($post->user_id !== auth()->id()) {
+        return response()->error(403, 'You don\'t have permission to delete this article');
+    }
+
+    $post->delete();
+
+    return response()->success(200, 'Article deleted successfully.', null);
+}
+
 }

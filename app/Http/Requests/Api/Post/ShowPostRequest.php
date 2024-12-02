@@ -14,7 +14,14 @@ class ShowPostRequest extends BaseRequest
     public function rules()
     {
         return [
-            'id' => 'required|integer|exists:posts,id', // Xác thực ID bài viết
+            // Bạn không cần kiểm tra 'id' trong body nữa.
+            // ID sẽ được kiểm tra khi gọi phương thức trong controller.
         ];
+    }
+
+    // Chúng ta có thể sử dụng phương thức 'authorize' nếu muốn kiểm tra quyền truy cập người dùng (nếu có)
+    public function authorize()
+    {
+        return true;
     }
 }
