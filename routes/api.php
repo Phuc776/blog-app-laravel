@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\PostController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,8 +36,24 @@ Route::prefix('auth')->group(function () {
     });
 });
 
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [UserController::class, 'getUser']);
     Route::get('/user/{user}', [UserController::class, 'getUserByIdUser']);
     Route::put('/user', [UserController::class, 'updateUser']);
 });
+
+
+// Protected routes requiring Sanctum authentication
+Route::middleware('auth:sanctum')->group(function () {
+    // RESTful routes for PostController using apiResource
+    Route::apiResource('posts', PostController::class);
+});
+                                         
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/posts/{post}/comments', [CommentController::class, 'index']);
+    Route::post('/posts/{post}/comments', [CommentController::class, 'store']);
+    Route::put('/comments/{comment}', [CommentController::class, 'update']);
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
+});
+
