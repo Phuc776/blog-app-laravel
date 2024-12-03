@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\OAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -38,4 +39,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/media', [MediaController::class, 'createMedia']);
     Route::delete('/media/{post_id}', [MediaController::class, 'deleteByPostId']);
     Route::get('/upload', [MediaController::class, 'getImageByFileUrl']);
+
+    Route::get('/posts/{post}/comments', [CommentController::class, 'index']);
+    Route::post('/posts/{post}/comments', [CommentController::class, 'store']);
+    Route::put('/comments/{comment}', [CommentController::class, 'update']);
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
 });
+

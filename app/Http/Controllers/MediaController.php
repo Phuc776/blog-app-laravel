@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\MediaService;
+use App\Http\Requests\Api\Media\CreateMediaRequest;
 
 class MediaController extends Controller
 {
@@ -21,19 +22,13 @@ class MediaController extends Controller
         ]);
     }
 
-    public function createMedia(Request $request)
+    public function createMedia(CreateMediaRequest $request)
     {
-        $validated = $request->validate([
-            'post_id' => 'required|integer',
-            'type' => 'required|int',
-            'fileUrls' => 'required|array',
-            'fileUrls.*' => 'required|file',
-        ]);
-
+        $validated = $request->validated();
         $fileUrls = [];
 
-        if ($request->hasFile('fileUrls')) {
-            foreach ($request->file('fileUrls') as $file) {
+        if ($request->hasFile('file_urls')) {
+            foreach ($request->file('file_urls') as $file) {
                 $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
                 $file->move(public_path('uploads'), $filename);
                 $fileUrls[] = $filename;
@@ -47,9 +42,9 @@ class MediaController extends Controller
             );
         }
 
-        if ($media) {
+        if (isset($media)) {
             return response()->json([
-                'status' => 'success',
+                'status' => 201,
                 'message' => 'Files uploaded and media created successfully',
                 'data' => [
                     'media' => $media,
@@ -58,7 +53,7 @@ class MediaController extends Controller
         } else {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Failed to upload files and create media',
+                'message' => 'Failed to create media',
                 'data' => [],
             ], 500);
         }
@@ -78,7 +73,7 @@ class MediaController extends Controller
 
         if ($deletedCount > 0) {
             return response()->json([
-                'status' => 'success',
+                'status' => 204,
                 'message' => 'Media deleted successfully',
                 'data' => [
                     'deleted_count' => $deletedCount,
@@ -86,7 +81,7 @@ class MediaController extends Controller
             ]);
         } else {
             return response()->json([
-                'status' => 'error',
+                'status' => 500,
                 'message' => 'No media found to delete for the given post_id',
                 'data' => [
                     'deleted_count' => $deletedCount,
@@ -100,13 +95,13 @@ class MediaController extends Controller
         $images = $this->mediaService->findByPostId($postId);
         if ($images->isEmpty()) {
             return response()->json([
-                'status' => 'error',
+                'status' => 404,
                 'message' => 'No images found for the given post_id',
                 'data' => [],
-            ], 404);
+            ]);
         }
         return response()->json([
-            'status' => 'success',
+            'status' => 200,
             'message' => 'Images retrieved successfully',
             'data' => $images,
         ]);
