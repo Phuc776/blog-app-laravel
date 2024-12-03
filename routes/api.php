@@ -37,10 +37,10 @@ Route::prefix('auth')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/follow/{followed}', [FollowController::class, 'follow']);
     Route::delete('/unfollow/{followed}', [FollowController::class, 'unfollow']);
-    Route::get('/following', [FollowController::class, 'getFollowing']);
-    Route::get('/followingCount', [FollowController::class, 'getFollowingCount']);
-    Route::get('/followers', [FollowController::class, 'getFollowers']);
-    Route::get('/followersCount', [FollowController::class, 'getFollowersCount']);
+    Route::get('/following/{user}', [FollowController::class, 'getFollowing']);
+    Route::get('/followingCount/{user}', [FollowController::class, 'getFollowingCount']);
+    Route::get('/followers/{user}', [FollowController::class, 'getFollowers']);
+    Route::get('/followersCount/{user}', [FollowController::class, 'getFollowersCount']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {

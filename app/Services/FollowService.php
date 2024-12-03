@@ -47,32 +47,31 @@ class FollowService
         return ['message' => 'Unfollowed successfully!', 'status' => true, 'data' => $follow];
     }
 
-    public function getFollowing()
+    public function getFollowing($id)
     {
         return $this->model
             ->join('users', 'follows.followed_id', '=', 'users.id')
-            ->where('follows.following_id', Auth::id())
+            ->where('follows.following_id', $id)
             ->select('follows.followed_id', 'users.*')
             ->orderBy('follows.followed_id', 'desc');
     }
 
-    public function getFollowers()
+    public function getFollowers($id)
     {
         return $this->model
             ->join('users as u', 'follows.following_id', '=', 'u.id')
-            ->where('followed_id', Auth::id())
+            ->where('followed_id', $id)
             ->select('follows.following_id', 'u.*')
             ->orderBy('follows.following_id', 'desc');
     }
 
-
-    public function getFollowingCount()
+    public function getFollowingCount($id)
     {
-        return $this->model->where('following_id', Auth::id())->count();
+        return $this->model->where('following_id', $id)->count();
     }
 
-    public function getFollowersCount()
+    public function getFollowersCount($id)
     {
-        return $this->model->where('followed_id', Auth::id())->count();
+        return $this->model->where('followed_id', $id)->count();
     }
 }

@@ -41,28 +41,28 @@ class FollowController extends Controller
         return response()->error(404, $result['message'], null);
     }
 
-    public function getFollowing(Request $request)
+    public function getFollowing(Request $request, User $user)
     {
-        $result = $this->followService->getFollowing();
+        $result = $this->followService->getFollowing($user->id);
         return FollowResource::apiPaginate($result, $request);
     }
 
-    public function getFollowers(Request $request)
+    public function getFollowers(Request $request, User $user)
     {
-        $result = $this->followService->getFollowers();
+        $result = $this->followService->getFollowers($user->id);
         return FollowResource::apiPaginate($result, $request);
     }
 
-    public function getFollowingCount()
+    public function getFollowingCount(User $user)
     {
-        $count = $this->followService->getFollowingCount();
+        $count = $this->followService->getFollowingCount($user->id);
 
         return response()->success(200, 'Get following count successfully.', ['count' => $count]);
     }
 
-    public function getFollowersCount()
+    public function getFollowersCount(User $user)
     {
-        $count = $this->followService->getFollowersCount();
+        $count = $this->followService->getFollowersCount($user->id);
 
         return response()->success(200, 'Get followers count  successfully.', ['count' => $count]);
     }
