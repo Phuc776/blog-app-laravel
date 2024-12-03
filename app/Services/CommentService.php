@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Comment;
 use App\Models\Post;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 
@@ -26,6 +27,7 @@ class CommentService
     {
         try{
             $params['post_id'] = $postId->id;
+            $params['user_id'] = Auth::id();
             return $this->model->create($params);
         }catch(\Exception $exception){
             Log::error($exception);

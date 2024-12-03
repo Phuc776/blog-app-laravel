@@ -16,7 +16,6 @@ class CreateRequest extends BaseRequest
     public function rules()
     {
         return [
-            'user_id' => ['required','integer'],
             'content' => ['required','string'],
         ];
     }
