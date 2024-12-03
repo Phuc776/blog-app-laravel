@@ -7,7 +7,8 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 
-class UserService {
+class UserService
+{
     protected $user;
 
     public function __construct(User $user)
@@ -25,7 +26,6 @@ class UserService {
         $user->avatar = $data['avatar'] ?? $user->avatar; // Update avatar only if provided
         $user->save();
 
-        return $user->only(['name','avatar']);
+        return $user->only(['name', 'avatar']);
     }
-
 }
