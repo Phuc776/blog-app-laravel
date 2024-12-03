@@ -22,7 +22,10 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $this->authService->register($request->validated());
+        $result = $this->authService->register($request->validated());
+        if (isset($result['error'])) {
+            return response()->error(403, 'User registration failed.', $result);
+        }
         return response()->success(201, 'User registered successfully. Please check your email to verify your account.', null);
     }
 
@@ -31,7 +34,7 @@ class AuthController extends Controller
         $result = $this->authService->login($request->validated());
 
         if (isset($result['error'])) {
-            return response()->error(403, $result['error']);
+            return response()->error(403, 'Login failed.', $result);
         }
 
         return response()->success(200, 'Login successful.', $result);
