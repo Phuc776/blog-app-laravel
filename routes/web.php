@@ -9,29 +9,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// ** Đăng ký và Đăng nhập **
-Route::get('register', function () {
-    return view('posts.register');  // Trang đăng ký
-})->name('register');
-Route::get('login', function () {
-    return view('posts.login');  // Trang đăng nhập
-})->name('login');
-
-// Đăng ký và đăng nhập xử lý
-Route::post('register', [AuthController::class, 'register']);
-Route::post('login', [AuthController::class, 'login']);
-
-// Đảm bảo chỉ người dùng đã đăng nhập mới có quyền truy cập vào các route này
-Route::middleware('auth')->group(function () {
-    // Các route liên quan đến quản lý bài viết
-    Route::resource('posts', PostController::class);
-    
-    // Logout
-    Route::post('logout', [AuthController::class, 'logout']);
-});
-// Thêm vào trong routes/web.php hoặc routes/api.php
-Route::get('/create-sample-user', [AuthController::class, 'createSampleUser']);
-
 
 
 // Route to display reset password form with token
