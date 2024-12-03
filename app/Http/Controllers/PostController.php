@@ -69,7 +69,7 @@ class PostController extends Controller
 
         // Kiểm tra quyền sở hữu
         if ($post->user_id !== auth()->id()) {
-            return response()->error(403, 'You don\'t have permission to update this article');
+            return response()->error(403, 'You don\'t have permission to update this article',null);
         }
 
         $post->update($validated);
@@ -92,7 +92,7 @@ public function destroy(DestroyPostRequest $request, $id)
 
     // Kiểm tra quyền sở hữu
     if ($post->user_id !== auth()->id()) {
-        return response()->error(403, 'You don\'t have permission to delete this article');
+        return response()->error(403, 'You don\'t have permission to delete this article',null);
     }
 
     $post->delete();

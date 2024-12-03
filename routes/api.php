@@ -38,4 +38,3 @@ Route::middleware('auth:sanctum')->group(function () {
     // RESTful routes for PostController using apiResource
     Route::apiResource('posts', PostController::class);
 });
-
