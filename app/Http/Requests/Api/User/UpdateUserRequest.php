@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Api\Auth;
+namespace App\Http\Requests\Api\User;
 
 use App\Http\Requests\BaseRequest;
 
-class ResendVerificationRequest extends BaseRequest
+class UpdateUserRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,7 +14,8 @@ class ResendVerificationRequest extends BaseRequest
     public function rules()
     {
         return [
-            'email' => 'required|string|email',
+            'name' => 'required|string|max:255',
+            'avatar' => 'nullable|string',
         ];
     }
 }

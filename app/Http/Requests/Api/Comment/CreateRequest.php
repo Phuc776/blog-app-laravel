@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Http\Requests\Api\Auth;
+namespace App\Http\Requests\Api\Comment;
 
 use App\Http\Requests\BaseRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
-class ResendVerificationRequest extends BaseRequest
+class CreateRequest extends BaseRequest
 {
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -14,7 +16,7 @@ class ResendVerificationRequest extends BaseRequest
     public function rules()
     {
         return [
-            'email' => 'required|string|email',
+            'content' => ['required','string'],
         ];
     }
 }
