@@ -31,7 +31,7 @@ class MediaController extends Controller
             foreach ($request->file('file_urls') as $file) {
                 $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
                 $file->move(public_path('uploads'), $filename);
-                $fileUrls[] = $filename;
+                $fileUrls[] = url('uploads/' . $filename);
             }
 
             // Lưu thông tin vào database

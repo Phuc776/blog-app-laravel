@@ -2,19 +2,11 @@
 
 namespace App\Http\Requests\Api\Media;
 
+use App\Http\Requests\BaseRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateMediaRequest extends FormRequest
+class CreateMediaRequest extends BaseRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return false;
-    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -26,8 +18,8 @@ class CreateMediaRequest extends FormRequest
         return [
             'post_id' => ['required','integer'],
             'type' => ['required','integer'],
-            'fileUrls' => ['required','array'],
-            'fileUrls.*' => ['required','file'],
+            'file_urls' => ['required','array'],
+            'file_urls.*' => ['required','file'],
         ];
     }
 }
