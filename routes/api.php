@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MediaController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\User\UserController;
@@ -51,6 +52,11 @@ Route::middleware('auth:sanctum')->group(function () {
 });
                                          
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/media', [MediaController::class, 'index']);
+    Route::post('/media', [MediaController::class, 'createMedia']);
+    Route::delete('/media/{post_id}', [MediaController::class, 'deleteByPostId']);
+    Route::get('/posts/{post}/media', [MediaController::class, 'getImagesByPostId']);
+
     Route::get('/posts/{post}/comments', [CommentController::class, 'index']);
     Route::post('/posts/{post}/comments', [CommentController::class, 'store']);
     Route::put('/comments/{comment}', [CommentController::class, 'update']);
