@@ -45,4 +45,11 @@ class LikeController extends Controller
 
         return response()->success(200, 'Get like count  successfully.', ['count' => $likes]);
     }
+
+    public function getIsLiked(Post $post)
+    {
+        $result = $this->likeService->getIsLiked($post->id);
+
+        return response()->success(200, 'Get isLiked successfully.', ['isLiked' => $result]);
+    }
 }
