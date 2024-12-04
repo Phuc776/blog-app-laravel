@@ -27,7 +27,7 @@ Route::prefix('auth')->group(function () {
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);   // Reset password with token
 
     // OAuth2 Authentication
-    Route::prefix('{provider}')->group(function () {
+    Route::prefix('{provider}')->middleware('web')->group(function () {
         Route::get('/redirect', [OAuthController::class, 'redirectToProvider']); // Redirect to provider
         Route::get('/callback', [OAuthController::class, 'handleProviderCallback']); // Handle provider callback
     });
