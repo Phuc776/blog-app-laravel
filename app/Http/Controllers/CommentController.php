@@ -22,7 +22,7 @@ class CommentController extends Controller
     public function index(Request $request, Post $post)
     {
         $result = $this->commentService->getListByPostId($post->id);
-        return CommentResource::apiPaginate($result, $request);
+        return response()->success(200, 'Get list comment successful.', CommentResource::apiPaginate($result, $request));
     }
 
     public function store(CreateRequest $createRequest,Post $post)
