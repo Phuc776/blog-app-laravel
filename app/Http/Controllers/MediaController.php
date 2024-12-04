@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\MediaService;
 use App\Http\Requests\Api\Media\CreateMediaRequest;
+use App\Models\Post;
 
 class MediaController extends Controller
 {
@@ -90,9 +91,9 @@ class MediaController extends Controller
         }
     }
 
-    public function getImagesByPostId($postId)
+    public function getImagesByPostId(Post $post)
     {
-        $images = $this->mediaService->findByPostId($postId);
+        $images = $this->mediaService->findByPostId($post->id);
         if ($images->isEmpty()) {
             return response()->json([
                 'status' => 404,

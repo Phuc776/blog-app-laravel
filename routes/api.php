@@ -38,7 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/media', [MediaController::class, 'index']);
     Route::post('/media', [MediaController::class, 'createMedia']);
     Route::delete('/media/{post_id}', [MediaController::class, 'deleteByPostId']);
-    Route::get('/upload', [MediaController::class, 'getImageByFileUrl']);
+    Route::get('/posts/{post}/media', [MediaController::class, 'getImagesByPostId']);
 
     Route::get('/posts/{post}/comments', [CommentController::class, 'index']);
     Route::post('/posts/{post}/comments', [CommentController::class, 'store']);
