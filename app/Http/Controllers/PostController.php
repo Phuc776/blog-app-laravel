@@ -69,7 +69,7 @@ class PostController extends Controller
 
         // Kiểm tra quyền sở hữu
         if ($post->user_id !== auth()->id()) {
-            return response()->error(403, 'You don\'t have permission to update this article',null);
+            return response()->error(403, 'You don\'t have permission to update this article', null);
         }
 
         $post->update($validated);
@@ -85,19 +85,38 @@ class PostController extends Controller
         return response()->success(200, 'Article details', $post);
     }
 
-// Xóa bài viết
-public function destroy(DestroyPostRequest $request, $id)
-{
-    $post = Post::findOrFail($id);
+    // Xóa bài viết
+    public function destroy(DestroyPostRequest $request, $id)
+    {
+        $post = Post::findOrFail($id);
 
-    // Kiểm tra quyền sở hữu
-    if ($post->user_id !== auth()->id()) {
-        return response()->error(403, 'You don\'t have permission to delete this article',null);
+        // Kiểm tra quyền sở hữu
+        if ($post->user_id !== auth()->id()) {
+            return response()->error(403, 'You don\'t have permission to delete this article', null);
+        }
+
+        $post->delete();
+
+        return response()->success(200, 'Article deleted successfully.', null);
     }
 
-    $post->delete();
+    public function getPostByUserId($userId)
+    {
+        // Lấy tất cả các bài viết của user với id là $userId
+        $posts = Post::where('user_id', $userId)->get();
 
-    return response()->success(200, 'Article deleted successfully.', null);
-}
+        if ($posts->isEmpty()) {
+            return response()->error(404, 'No posts found for this user.', null);
+        }
 
+        return response()->success(200, 'Posts by user retrieved successfully.', $posts);
+    }
+
+    public function countPostsByUserId($userId)
+    {
+        // Đếm số bài viết của user với id là $userId
+        $count = Post::where('user_id', $userId)->count();
+
+        return response()->success(200, 'Post count retrieved successfully.', ['count' => $count]);
+    }
 }

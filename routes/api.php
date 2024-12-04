@@ -47,6 +47,8 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     // RESTful routes for PostController using apiResource
     Route::apiResource('posts', PostController::class);
+    Route::get('/posts/user/{userId}', [PostController::class, 'getPostByUserId']);
+    Route::get('/posts/user/{userId}/count', [PostController::class, 'countPostsByUserId']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
