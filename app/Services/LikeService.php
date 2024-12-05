@@ -47,4 +47,12 @@ class LikeService
 
         return $this->model->where('post_id', $post->id)->count();
     }
+
+    public function getIsLiked($postId)
+    {
+        return $this->model
+            ->where('post_id', $postId)
+            ->where('user_id', Auth::id())
+            ->exists();
+    }
 }
