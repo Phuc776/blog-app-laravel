@@ -45,6 +45,7 @@ class OAuthService
             $user = $this->user->create([
                 "name" => $OAuthUser->name,
                 "email" => $OAuthUser->email,
+                "avatar" => $OAuthUser->avatar,
                 "auth_type" => 'oauth',
                 "provider_name" => $provider,
                 "provider_id" => $OAuthUser->id,
