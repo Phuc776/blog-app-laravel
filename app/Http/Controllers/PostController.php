@@ -24,7 +24,7 @@ class PostController extends Controller
         $query = Post::query();
 
         // Phân trang
-        $perPage = $validated['per_page'] ?? 2;
+        $perPage = $validated['per_page'] ?? 6;
         $page = $validated['page'] ?? 1;
 
         // Sắp xếp
