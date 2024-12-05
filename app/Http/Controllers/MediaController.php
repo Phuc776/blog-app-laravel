@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\MediaService;
 use App\Http\Requests\Api\Media\CreateMediaRequest;
+use App\Models\Media;
 use App\Models\Post;
 
 class MediaController extends Controller

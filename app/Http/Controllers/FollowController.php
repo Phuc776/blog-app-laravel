@@ -66,4 +66,11 @@ class FollowController extends Controller
 
         return response()->success(200, 'Get followers count  successfully.', ['count' => $count]);
     }
+
+    public function isFollowing(User $user)
+    {
+        $result = $this->followService->isFollowing($user->id);
+
+        return response()->success(200, 'Check following status successfully.', ['isFollowing' => $result]);
+    }
 }

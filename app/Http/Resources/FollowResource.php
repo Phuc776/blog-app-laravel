@@ -16,7 +16,7 @@ class FollowResource extends BaseResource
     public function toArray($request): array
     {
         return [
-            'followed_id' => $this->followed_id,
+            'user_id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
             'avatar' => $this->avatar,

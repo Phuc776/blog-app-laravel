@@ -70,6 +70,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/followingCount/{user}', [FollowController::class, 'getFollowingCount']);
     Route::get('/followers/{user}', [FollowController::class, 'getFollowers']);
     Route::get('/followersCount/{user}', [FollowController::class, 'getFollowersCount']);
+    Route::get('/isFollowing/{user}', [FollowController::class, 'isFollowing']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {

@@ -74,4 +74,11 @@ class FollowService
     {
         return $this->model->where('followed_id', $id)->count();
     }
+
+    public function isFollowing($followedId)
+    {
+        return $this->model->where('following_id', Auth::id())
+            ->where('followed_id', $followedId)
+            ->exists();
+    }
 }
