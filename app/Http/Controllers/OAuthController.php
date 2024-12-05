@@ -2,49 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use Laravel\Socialite\Facades\Socialite;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use App\Services\OAuthService;
 use Illuminate\Http\Request;
 
 class OAuthController extends Controller
 {
-    // public function redirectToProvider($provider)
-    // {
-    //     return Socialite::driver($provider)->stateless()->redirect();
-    // }
+    private $oAuthService;
 
-    // public function handleProviderCallback($provider)
-    // {
-    //     try {
-    //         $socialUser = Socialite::driver($provider)->stateless()->user();
+    public function __construct(OAuthService $oAuthService)
+    {
+        $this->oAuthService = $oAuthService;
+    }
 
-    //         // Check if the user already exists
-    //         $user = User::where('email', $socialUser->getEmail())->first();
-    
-    //         if (!$user) {
-    //             // Create a new user if they don't exist
-    //             $user = User::create([
-    //                 'name' => $socialUser->getName(),
-    //                 'email' => $socialUser->getEmail(),
-    //                 'auth_type' => $provider,
-    //                 'email_verified_at' => now(),  // Consider OAuth-verified
-    //             ]);
-    //         }
-    
-    //         // Update or create the user_oauth record
-    //         UserOAuth::updateOrCreate(
-    //             ['user_id' => $user->id, 'provider_id' => $socialUser->getId()],
-    //             ['access_token' => $socialUser->token]
-    //         );
-    
-    //         // Generate a token for the user
-    //         $token = $user->createToken('auth_token')->plainTextToken;
-    
-    //         return response()->json(['access_token' => $token, 'token_type' => 'Bearer']);
-        
-    //     } catch (\Exception $e) {
-    //         return response()->json(['error' => 'Authentication failed.'], 500);
-    //     }
-    // }
+    /**
+     * Redirect to the OAuth provider.
+     *
+     * @param string $provider
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function redirectToProvider($provider)
+    {
+        try {
+            $redirectUrl = $this->oAuthService->getRedirectUrl($provider);
+            return response()->success(200, 'Redirect URL generated successfully.', ['redirect_url' => $redirectUrl]);
+        } catch (\Exception $e) {
+            return response()->error(500, 'Failed to generate redirect URL.', ['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Handle the provider's callback.
+     *
+     * @param string $provider
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function handleProviderCallback($provider)
+    {
+        try {
+            $result = $this->oAuthService->handleCallback($provider);
+
+            if (isset($result['error'])) {
+                return response()->error(401, 'Authentication failed.', $result['error']);
+            }
+
+            return response()->success(200, 'User authenticated successfully.', $result);
+        } catch (\Exception $e) {
+            return response()->error(500, 'Error handling provider callback.', ['error' => $e->getMessage()]);
+        }
+    }
 }

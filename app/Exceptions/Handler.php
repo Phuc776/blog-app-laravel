@@ -2,7 +2,6 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -38,26 +37,5 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
-    }
-
-    /**
-     * Convert an authentication exception into a response.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \Illuminate\Auth\AuthenticationException $exception
-     * @return \Illuminate\Http\Response
-     */
-    protected function unauthenticated($request, AuthenticationException $exception)
-    {
-        if ($request->expectsJson()) {
-            return response()->json([
-                'status' => 401,
-                'message' => 'Unauthenticated. Please log in first.',
-                'error' => $exception->getMessage(),
-            ], 401);
-        }
-
-        // Default behavior for non-API requests
-        return redirect()->guest(route('login'));
     }
 }

@@ -29,7 +29,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'avatar',
         'role_id', // Role relationship
-        'avatar',  // Profile picture or user avatar
+        'provider_name',
+        'provider_id',
         'auth_type', // For distinguishing between registered and OAuth2 users
     ];
 
@@ -106,6 +107,17 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany(User::class, 'follows', 'following_id', 'followed_id');
     }
+
+    public function canLoginWithPassword()
+    {
+        return $this->auth_type === 'local' || $this->auth_type === 'mixed';
+    }
+    
+    public function canLoginWithProvider($provider)
+    {
+        return $this->auth_type === 'oauth' || $this->auth_type === 'mixed';
+    }
+    
 
     /**
      * Relationship with the UserOauth model.
