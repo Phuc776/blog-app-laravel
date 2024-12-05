@@ -7,6 +7,7 @@ use App\Http\Requests\Api\User\UpdateUserRequest;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -29,11 +30,11 @@ class UserController extends Controller
         return response()->success(200, 'User retrieved successfully.', $user);
     }
 
-    public function updateUser(UpdateUserRequest $updateRequest, User $user)
+    public function updateUser(UpdateUserRequest $updateRequest)
     {
         $request = $updateRequest->validated();
 
-        $result = $this->userService->updateUser($request,$user);
+        $result = $this->userService->updateUser($request, Auth::user());
 
         return response()->success(200, 'User updated successfully.', $result);
     }

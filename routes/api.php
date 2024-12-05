@@ -40,7 +40,7 @@ Route::prefix('auth')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [UserController::class, 'getUser']);
     Route::get('/user/{user}', [UserController::class, 'getUserByIdUser']);
-    Route::put('/user/{user}', [UserController::class, 'updateUser']);
+    Route::put('/user', [UserController::class, 'updateUser']);
 });
 
 // Protected routes requiring Sanctum authentication
