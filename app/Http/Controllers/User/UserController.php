@@ -29,12 +29,12 @@ class UserController extends Controller
         return response()->success(200, 'User retrieved successfully.', $user);
     }
 
-    public function updateUser(UpdateUserRequest $request)
+    public function updateUser(UpdateUserRequest $updateRequest, User $user)
     {
-        $validated = $request->validated();
+        $request = $updateRequest->validated();
 
-        $user = $this->userService->updateUser($request->user(), $validated);
+        $result = $this->userService->updateUser($request,$user);
 
-        return response()->success(200, 'User updated successfully.', $user);
+        return response()->success(200, 'User updated successfully.', $result);
     }
 }

@@ -14,8 +14,8 @@ class UpdateUserRequest extends BaseRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
-            'avatar' => 'nullable|string',
+            'name' => 'string|max:255',
+            'avatar' => 'nullable|file',
         ];
     }
 }
