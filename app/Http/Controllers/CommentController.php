@@ -38,7 +38,6 @@ class CommentController extends Controller
     {
         try{
             if (!$comment) {
-                dd(123);
                 return response()->error(404, 'Comment not found.', null);
             }
 
