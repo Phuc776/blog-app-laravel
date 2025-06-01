@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPasswordNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -26,8 +28,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'avatar',
         'role_id', // Role relationship
-        'avatar',  // Profile picture or user avatar
+        'provider_name',
+        'provider_id',
         'auth_type', // For distinguishing between registered and OAuth2 users
     ];
 
@@ -41,6 +45,16 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
 
+    public function setPasswordAttribute($password)
+    {
+        $this->attributes['password'] = Hash::make($password);
+    }
+
+    public function getAccessTokenAttribute()
+    {
+        return $this->createToken('user')->plainTextToken;
+    }
+
     /**
      * The attributes that should be cast.
      *
@@ -48,7 +62,6 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        // 'password' => 'hashed',
     ];
 
     /**
@@ -96,11 +109,27 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(User::class, 'follows', 'following_id', 'followed_id');
     }
 
+    public function canLoginWithPassword()
+    {
+        return $this->auth_type === 'local' || $this->auth_type === 'mixed';
+    }
+    
+    public function canLoginWithProvider($provider)
+    {
+        return $this->auth_type === 'oauth' || $this->auth_type === 'mixed';
+    }
+    
+
     /**
      * Relationship with the UserOauth model.
      */
     public function oauthAccounts()
     {
         return $this->hasMany(UserOauth::class);
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 }

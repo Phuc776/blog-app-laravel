@@ -18,9 +18,12 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->foreignId('role_id')->default(1)->constrained('roles'); // Assuming 'roles' table exists
+            $table->string('avatar')->nullable();
+            $table->foreignId('role_id')->default(1)->constrained('roles');
             $table->string('auth_type')->default('local'); // Track whether user registered via local or OAuth
             $table->string('password')->nullable();
+            $table->string('provider_name')->nullable();
+            $table->string('provider_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
